@@ -9,8 +9,6 @@ This project is a Node.js app using [Baileys](https://github.com/WhiskeySockets/
   - Tag all members in a group
   - Delete session
   - List chats and groups
-- Baileys integration for WhatsApp Web automation
-- Session management
 
 ## Tech Stack
 
