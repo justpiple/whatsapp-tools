@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Fake Reply WA</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="card">
+    <h2>WhatsApp Tools</h2>
+
+    <div class="tab-buttons">
+      <button type="button" class="tab-btn active" data-tab="fakeReplyTab">Fake Reply</button>
+      <button type="button" class="tab-btn" data-tab="tagAllTab">Tag All</button>
+    </div>
+
+    <div id="fakeReplyTab" class="tab-content active">
+      <div class="option-toggle">
+        <label class="checkbox-container">
+          <input type="checkbox" id="manualEntryToggle" class="toggle-checkbox">
+          <span class="checkbox-label">Masukkan ID Manual/Private Chat</span>
+        </label>
+      </div>
+
+      <div id="selectChatSection">
+        <div class="form-group">
+          <label for="chatSearch">Cari Grup:</label>
+          <div class="search-container">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="chatSearch" placeholder="Ketik untuk mencari...">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="chatList">Pilih dari daftar:</label>
+          <div class="chat-list" id="chatList">
+            <div class="empty-list-message">Memuat daftar chat...</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="manualEntrySection" style="display: none;">
+        <div class="form-group">
+          <label for="manualJid">Masukkan ID Chat/Grup:</label>
+          <input type="text" id="manualJid" placeholder="Contoh: 628xxxxxxxxx atau groupid@g.us">
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3>Kirim Fake Reply</h3>
+      <form id="fakeReplyForm">
+        <div class="form-group">
+          <label for="targetJid">GRUP ID / CHAT:</label>
+          <input type="text" id="targetJid" required placeholder="628xxxxxxxxx@s.whatsapp.net atau groupid@g.us"
+            readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="participant">NOMOR PENGIRIM:</label>
+          <input type="text" id="participant" required placeholder="628xxxxxxxxx@s.whatsapp.net">
+        </div>
+
+        <div class="form-group">
+          <label for="quotedText">Isi pesan yang ingin dibalas:</label>
+          <input type="text" id="quotedText" required placeholder="Pesan fake">
+        </div>
+
+        <div class="form-group">
+          <label for="yourMessage">Pesan kamu:</label>
+          <input type="text" id="yourMessage" required placeholder="Pesan kamu">
+        </div>
+
+        <button type="submit">Kirim Fake Reply</button>
+      </form>
+    </div>
+
+    <div id="tagAllTab" class="tab-content">
+      <div class="option-toggle">
+        <label class="checkbox-container">
+          <input type="checkbox" id="manualGroupToggle" class="toggle-checkbox">
+          <span class="checkbox-label">Masukkan ID Grup Manual</span>
+        </label>
+      </div>
+
+      <div id="selectGroupSection">
+        <div class="form-group">
+          <label for="groupSearch">Cari Grup:</label>
+          <div class="search-container">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="groupSearch" placeholder="Ketik untuk mencari grup...">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="groupList">Pilih dari daftar:</label>
+          <div class="chat-list" id="groupList">
+            <div class="empty-list-message">Memuat daftar grup...</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="manualGroupSection" style="display: none;">
+        <div class="form-group">
+          <label for="manualGroupId">Masukkan ID Grup:</label>
+          <input type="text" id="manualGroupId" placeholder="Contoh: groupid@g.us">
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3>Tag All Members</h3>
+      <form id="tagAllForm">
+        <div class="form-group">
+          <label for="tagGroupId">ID GRUP:</label>
+          <input type="text" id="tagGroupId" required placeholder="groupid@g.us" readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="tagMessage">Pesan (opsional):</label>
+          <textarea id="tagMessage" placeholder="Tulis pesan"></textarea>
+        </div>
+
+        <button type="submit">Kirim Tag All</button>
+      </form>
+    </div>
+
+    <div class="divider"></div>
+    <button id="deleteButton" onclick="deleteSession()">Hapus Session</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,18 @@
+{
+  "name": "whatsapp-tools",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Ben",
+  "license": "ISC",
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.17.16",
+    "express": "^5.1.0",
+    "node-cache": "^5.1.2",
+    "qrcode-terminal": "^0.12.0"
+  }
+}

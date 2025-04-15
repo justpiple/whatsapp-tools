@@ -1,0 +1,19 @@
+# Node modules
+node_modules/
+
+# Env files
+.env
+
+# Session folders/files (Baileys)
+auth/
+session.data.json
+baileys_auth_info/
+baileys_store.json
+
+# Logs
+logs/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
