@@ -8,7 +8,7 @@
   },
   "keywords": [],
   "author": "Ben",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@whiskeysockets/baileys": "^6.17.16",
     "express": "^5.1.0",
