@@ -12,7 +12,9 @@
   "dependencies": {
     "@whiskeysockets/baileys": "^6.17.16",
     "express": "^5.1.0",
+    "jimp": "^0.22.10",
     "node-cache": "^5.1.2",
+    "pino": "^9.6.0",
     "qrcode-terminal": "^0.12.0"
   }
 }

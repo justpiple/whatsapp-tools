@@ -8,13 +8,15 @@ import NodeCache from "node-cache";
 import { randomUUID } from "crypto";
 import fs from "fs";
 import pino from "pino";
+import Jimp from "jimp";
 
 const app = express();
 const PORT = 3000;
 const groupCache = new NodeCache({ stdTTL: 5 * 60, useClones: false });
 const authFolder = "./auth";
 
-app.use(express.json());
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(express.static("public"));
 
 let sock;
@@ -140,6 +142,82 @@ app.post("/send-fake-reply", async (req, res) => {
     });
     res.json({ status: "sent" });
   } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+async function generateProfilePicture(buffer) {
+  const jimp = await Jimp.read(buffer);
+  const resz =
+    jimp.getWidth() > jimp.getHeight()
+      ? jimp.resize(550, Jimp.AUTO)
+      : jimp.resize(Jimp.AUTO, 650);
+
+  return {
+    img: await resz.getBufferAsync(Jimp.MIME_JPEG),
+    preview: await resz.getBufferAsync(Jimp.MIME_JPEG),
+  };
+}
+
+async function updateProfilePicture(jid, buffer) {
+  if (!buffer || !Buffer.isBuffer(buffer)) {
+    throw new TypeError("Expected a buffer");
+  }
+
+  if (jid === "@s.whatsapp.net") {
+    jid = undefined;
+  }
+
+  const generate = await generateProfilePicture(buffer);
+
+  try {
+    const response = await sock.query({
+      tag: "iq",
+      attrs: {
+        target: jid,
+        to: "@s.whatsapp.net",
+        type: "set",
+        xmlns: "w:profile:picture",
+      },
+      content: [
+        {
+          tag: "picture",
+          attrs: { type: "image" },
+          content: generate.img,
+        },
+      ],
+    });
+
+    if (jid === sock.user.id) {
+      sock.user.imgUrl = response.eurl;
+    } else {
+      sock.ev.emit("chat-update", { jid, imgUrl: response.eurl });
+    }
+
+    return response;
+  } catch (error) {
+    console.error("Error updating profile picture:", error);
+    throw error;
+  }
+}
+
+app.post("/update-profile-picture", async (req, res) => {
+  try {
+    const { jid, imageBuffer } = req.body;
+
+    if (!imageBuffer) {
+      return res.status(400).json({ error: "Image buffer is required" });
+    }
+
+    const buffer = Buffer.from(imageBuffer, "base64");
+    const response = await updateProfilePicture(
+      jid || "@s.whatsapp.net",
+      buffer,
+    );
+
+    res.json({ status: "success", data: response });
+  } catch (err) {
+    console.error("Failed to update profile picture:", err);
     res.status(500).json({ error: err.message });
   }
 });

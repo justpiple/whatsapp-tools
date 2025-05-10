@@ -319,3 +319,150 @@ document.getElementById("tagAllForm").addEventListener("submit", async (e) => {
 });
 
 window.addEventListener("DOMContentLoaded", loadChats);
+
+document
+  .getElementById("ownProfilePicToggle")
+  .addEventListener("change", function () {
+    const selectSection = document.getElementById("selectProfilePicSection");
+    const jidInput = document.getElementById("profilePicJid");
+
+    if (this.checked) {
+      selectSection.style.display = "none";
+      jidInput.value = "@s.whatsapp.net";
+      jidInput.readOnly = true;
+    } else {
+      selectSection.style.display = "block";
+      jidInput.value = "";
+      jidInput.readOnly = true;
+    }
+  });
+
+document
+  .getElementById("manualProfilePicToggle")
+  .addEventListener("change", function () {
+    const selectSection = document.getElementById("selectChatSection");
+    const manualSection = document.getElementById("manualProfilePicSection");
+    const jidInput = document.getElementById("profilePicJid");
+
+    if (this.checked) {
+      selectSection.style.display = "none";
+      manualSection.style.display = "block";
+      jidInput.readOnly = false;
+    } else {
+      selectSection.style.display = "block";
+      manualSection.style.display = "none";
+      jidInput.readOnly = true;
+    }
+  });
+
+document
+  .getElementById("manualProfilePicJid")
+  .addEventListener("input", function () {
+    document.getElementById("profilePicJid").value = this.value;
+  });
+
+// Image Preview
+document
+  .getElementById("profilePicFile")
+  .addEventListener("change", function (e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const preview = document.getElementById("imagePreview");
+        preview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+document
+  .getElementById("profilePicForm")
+  .addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const jid = document.getElementById("profilePicJid").value;
+    const fileInput = document.getElementById("profilePicFile");
+
+    if (!fileInput.files[0]) {
+      alert("Pilih gambar terlebih dahulu");
+      return;
+    }
+
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+
+    reader.onload = async function (e) {
+      try {
+        const base64Image = e.target.result.split(",")[1];
+        const response = await fetch("/update-profile-picture", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            jid: jid,
+            imageBuffer: base64Image,
+          }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          alert("Profile picture berhasil diupdate!");
+          fileInput.value = "";
+          document.getElementById("imagePreview").innerHTML =
+            "<p>Preview gambar akan muncul di sini</p>";
+        } else {
+          alert("Gagal mengupdate profile picture: " + result.error);
+        }
+      } catch (error) {
+        alert("Terjadi kesalahan: " + error.message);
+      }
+    };
+
+    reader.readAsDataURL(file);
+  });
+
+async function loadProfilePicChatList() {
+  try {
+    const response = await fetch("/chats");
+    const data = await response.json();
+
+    const chatList = document.getElementById("profilePicList");
+    chatList.innerHTML = "";
+
+    if (data.groups && data.groups.length > 0) {
+      data.groups.forEach((group) => {
+        const div = document.createElement("div");
+        div.className = "chat-item";
+        div.textContent = group.subject || group.id;
+        div.onclick = () => {
+          document.getElementById("profilePicJid").value = group.id;
+        };
+        chatList.appendChild(div);
+      });
+    } else {
+      chatList.innerHTML =
+        '<div class="empty-list-message">Tidak ada chat yang tersedia</div>';
+    }
+  } catch (error) {
+    console.error("Error loading chat list:", error);
+  }
+}
+
+document
+  .getElementById("profilePicSearch")
+  .addEventListener("input", function (e) {
+    const searchTerm = e.target.value.toLowerCase();
+    const chatItems = document.querySelectorAll("#profilePicList .chat-item");
+
+    chatItems.forEach((item) => {
+      const text = item.textContent.toLowerCase();
+      item.style.display = text.includes(searchTerm) ? "block" : "none";
+    });
+  });
+
+document
+  .querySelector('[data-tab="profilePicTab"]')
+  .addEventListener("click", loadProfilePicChatList);

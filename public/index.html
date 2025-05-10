@@ -13,6 +13,7 @@
     <div class="tab-buttons">
       <button type="button" class="tab-btn active" data-tab="fakeReplyTab">Fake Reply</button>
       <button type="button" class="tab-btn" data-tab="tagAllTab">Tag All</button>
+      <button type="button" class="tab-btn" data-tab="profilePicTab">Profile Picture</button>
     </div>
 
     <div id="fakeReplyTab" class="tab-content active">
@@ -123,6 +124,78 @@
         </div>
 
         <button type="submit">Kirim Tag All</button>
+      </form>
+    </div>
+
+    <div id="profilePicTab" class="tab-content">
+      <div class="section-description">
+        <p>This feature allows you to set a WhatsApp profile picture without cropping. You can change the group
+          profile picture if you group admin.</p>
+      </div>
+
+      <div class="option-toggle">
+        <label class="checkbox-container">
+          <input type="checkbox" id="ownProfilePicToggle" class="toggle-checkbox">
+          <span class="checkbox-label">Update Profile Picture Sendiri</span>
+        </label>
+      </div>
+
+      <div id="selectProfilePicSection">
+        <div class="option-toggle">
+          <label class="checkbox-container">
+            <input type="checkbox" id="manualProfilePicToggle" class="toggle-checkbox">
+            <span class="checkbox-label">Masukkan ID Manual/Private Chat</span>
+          </label>
+        </div>
+
+        <div id="selectChatSection">
+          <div class="form-group">
+            <label for="profilePicSearch">Cari Chat:</label>
+            <div class="search-container">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="profilePicSearch" placeholder="Ketik untuk mencari...">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="profilePicList">Pilih dari daftar:</label>
+            <div class="chat-list" id="profilePicList">
+              <div class="empty-list-message">Memuat daftar chat...</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="manualProfilePicSection" style="display: none;">
+          <div class="form-group">
+            <label for="manualProfilePicJid">Masukkan ID Chat/Grup:</label>
+            <input type="text" id="manualProfilePicJid" placeholder="Contoh: 628xxxxxxxxx atau groupid@g.us">
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3>Update Profile Picture</h3>
+      <form id="profilePicForm">
+        <div class="form-group">
+          <label for="profilePicJid">GRUP ID / CHAT:</label>
+          <input type="text" id="profilePicJid" required placeholder="628xxxxxxxxx@s.whatsapp.net atau groupid@g.us"
+            readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="profilePicFile">Pilih Gambar:</label>
+          <input type="file" id="profilePicFile" accept="image/*" required>
+          <small class="file-info">Format yang didukung: JPG, PNG, GIF. Ukuran maksimal: 5MB</small>
+        </div>
+
+        <div class="form-group">
+          <div id="imagePreview" class="image-preview">
+            <p>Preview gambar akan muncul di sini</p>
+          </div>
+        </div>
+
+        <button type="submit">Update Profile Picture</button>
       </form>
     </div>
 
