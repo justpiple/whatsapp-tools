@@ -10,7 +10,7 @@
   "author": "Ben",
   "license": "MIT",
   "dependencies": {
-    "@whiskeysockets/baileys": "^6.17.16",
+    "@whiskeysockets/baileys": "^6.7.18",
     "express": "^5.1.0",
     "jimp": "^0.22.10",
     "node-cache": "^5.1.2",
