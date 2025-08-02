@@ -9,6 +9,7 @@ import { randomUUID } from "crypto";
 import fs from "fs";
 import pino from "pino";
 import Jimp from "jimp";
+import QRCode from "qrcode";
 
 const app = express();
 const PORT = 3000;
@@ -26,7 +27,6 @@ async function startSock() {
   const { state, saveCreds } = await useMultiFileAuthState("auth");
   sock = makeWASocket({
     auth: state,
-    printQRInTerminal: true,
     logger: logger,
     cachedGroupMetadata: async (jid) => groupCache.get(jid),
   });
@@ -43,8 +43,12 @@ async function startSock() {
 
   sock.ev.on("creds.update", saveCreds);
 
-  sock.ev.on("connection.update", (update) => {
-    const { connection, lastDisconnect } = update;
+  sock.ev.on("connection.update", async (update) => {
+    const { connection, lastDisconnect, qr } = update;
+    if (qr) {
+      console.log(await QRCode.toString(qr, { type: "terminal", small: true }));
+    }
+
     if (connection === "close") {
       const shouldReconnect =
         lastDisconnect?.error?.output?.statusCode !==
@@ -54,7 +58,7 @@ async function startSock() {
         "Connection closed due to",
         lastDisconnect?.error,
         ", reconnecting:",
-        shouldReconnect,
+        shouldReconnect
       );
 
       if (shouldReconnect) {
@@ -77,8 +81,13 @@ async function tagAll(groupJid, message) {
     const mentions = participants.map((p) => p.id);
 
     await sock.sendMessage(groupJid, {
-      text: message || "Hi @everyone",
-      mentions: mentions,
+      text: message || `Hi @${groupJid}`,
+      contextInfo: {
+        mentionedJid: mentions,
+        groupMentions: !message
+          ? [{ groupSubject: "everyone", groupJid }]
+          : undefined,
+      },
     });
 
     return true;
@@ -212,7 +221,7 @@ app.post("/update-profile-picture", async (req, res) => {
     const buffer = Buffer.from(imageBuffer, "base64");
     const response = await updateProfilePicture(
       jid || "@s.whatsapp.net",
-      buffer,
+      buffer
     );
 
     res.json({ status: "success", data: response });
@@ -225,7 +234,7 @@ app.post("/update-profile-picture", async (req, res) => {
 async function init() {
   await startSock();
   app.listen(PORT, () =>
-    console.log(`Server ready at http://localhost:${PORT}`),
+    console.log(`Server ready at http://localhost:${PORT}`)
   );
 }
 
